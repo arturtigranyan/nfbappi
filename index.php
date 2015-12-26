@@ -10,8 +10,6 @@ $fb = new Facebook\Facebook([
 ]);
 
 
-echo "hello";
-
 $helper = $fb->getCanvasHelper();
 $permissions = ['email', 'publish_actions']; // optional
 try {
@@ -43,12 +41,31 @@ if (isset($accessToken)) {
     }
 
     // validating the access token
+
+    try{
+        $request = $fb->get('/me?fields=name, email');
+    }
+    catch(Facebook\Exceptions\FacebookResponseException $e){
+        if($e->getCode() == 190){
+            $helper = $fb->getRedirectLoginHelper();
+            $loginUrl = $helper->getLoginUrl('https://apps.facebook.com/newfbappi/', $permissions);
+            echo "<script>window.top.location.href='".$loginUrl."'</script>";
+        }
+        exit;
+    }
+    catch(Facebook\Exceptions\FacebookSDKException $e) {
+        // When validation fails or other local issues
+        echo 'Facebook SDK returned an error: ' . $e->getMessage();
+        exit;
+    }
+
     try {
-        $request = $fb->get('/me');
+        $request = $fb->get('/me?fields=name, email');
+        $profile = $request->getGraphUser();
     } catch(Facebook\Exceptions\FacebookResponseException $e) {
         // When Graph returns an error
         if ($e->getCode() == 190) {
-            unset($_SESSION['facebook_access_token']);
+//            unset($_SESSION['facebook_access_token']);
             $helper = $fb->getRedirectLoginHelper();
             $loginUrl = $helper->getLoginUrl('https://apps.facebook.com/newfbappi/', $permissions);
             echo "<script>window.top.location.href='".$loginUrl."'</script>";
@@ -59,21 +76,8 @@ if (isset($accessToken)) {
         echo 'Facebook SDK returned an error: ' . $e->getMessage();
         exit;
     }
-    try {
-        // message must come from the user-end
-        $data = ['source' => $fb->fileToUpload(__DIR__.'/photo.jpg'), 'message' => 'my photo'];
-        $request = $fb->post('/me/photos', $data);
-        $response = $request->getGraphNode()->asArray();
-    } catch(Facebook\Exceptions\FacebookResponseException $e) {
-        // When Graph returns an error
-        echo 'Graph returned an error: ' . $e->getMessage();
-        exit;
-    } catch(Facebook\Exceptions\FacebookSDKException $e) {
-        // When validation fails or other local issues
-        echo 'Facebook SDK returned an error: ' . $e->getMessage();
-        exit;
-    }
-    echo $response['id'];
+
+    echo $profile['name'];
     // Now you can redirect to another page and use the
     // access token from $_SESSION['facebook_access_token']
 } else {
