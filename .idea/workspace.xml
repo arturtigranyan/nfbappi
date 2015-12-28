@@ -45,8 +45,8 @@
       <file leaf-file-name="get-all-posts-on-user-timeline.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/get-all-posts-on-user-timeline.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6032316">
-              <caret line="85" column="53" selection-start-line="85" selection-start-column="52" selection-end-line="85" selection-end-column="53" />
+            <state vertical-scroll-proportion="0.35906643">
+              <caret line="71" column="25" selection-start-line="71" selection-start-column="18" selection-end-line="71" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -231,7 +231,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22919819" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -629,8 +629,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/get-all-posts-on-user-timeline.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6032316">
-          <caret line="85" column="53" selection-start-line="85" selection-start-column="52" selection-end-line="85" selection-end-column="53" />
+        <state vertical-scroll-proportion="0.35906643">
+          <caret line="71" column="25" selection-start-line="71" selection-start-column="18" selection-end-line="71" selection-end-column="25" />
           <folding />
         </state>
       </provider>
