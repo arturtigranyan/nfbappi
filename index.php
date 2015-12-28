@@ -88,7 +88,7 @@ if (isset($accessToken)) {
         }
 //        print_r($total_posts);
         foreach($total_posts as $key){
-            echo $key['message'] . '<br>';
+//            echo $key['message'] . '<br>';
         }
     } else {
         $posts_response = $posts_request->getGraphEdge()->asArray();
