@@ -71,28 +71,21 @@ if (isset($accessToken)) {
     $total_posts = array();
     $posts_response = $posts_request->getGraphEdge();
     if($fb->next($posts_response)) {
-//        $response_array = $posts_response->asArray();
-//        $total_posts = array_merge($total_posts, $response_array);
-        /*
+        $response_array = $posts_response->asArray();
+        $total_posts = array_merge($total_posts, $response_array);
         while ($posts_response = $fb->next($posts_response)) {
             $response_array = $posts_response->asArray();
             $total_posts = array_merge($total_posts, $response_array);
         }
-        */
-        while($posts_response = $fb->next($posts_response)){
-            $response_array = $posts_response->asArray();
-            $total_posts    = array_merge($total_posts, $response_array);
-            $posts_response = $posts_request;
-            $response_array = $posts_response->asArray();
-            $total_posts    = array_merge($total_posts, $response_array);
-        }
 //        print_r($total_posts);
         foreach($total_posts as $key){
-//            echo $key['message'] . '<br>';
+            echo $key['message'] . '<br>';
         }
+
     } else {
         $posts_response = $posts_request->getGraphEdge()->asArray();
 //        print_r($posts_response);
+
     }
     // Now you can redirect to another page and use the access token from $_SESSION['facebook_access_token']
 } else {
