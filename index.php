@@ -77,7 +77,10 @@ if (isset($accessToken)) {
             $response_array = $posts_response->asArray();
             $total_posts = array_merge($total_posts, $response_array);
         }
-        print_r($total_posts);
+//        print_r($total_posts);
+        foreach($total_posts as $key){
+            echo $key['message'];
+        }
     } else {
         $posts_response = $posts_request->getGraphEdge()->asArray();
         print_r($posts_response);
