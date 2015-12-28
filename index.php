@@ -9,9 +9,8 @@ $fb = new Facebook\Facebook([
     'default_graph_version' => 'v2.5',
 ]);
 
-
 $helper = $fb->getCanvasHelper();
-$permissions = ['user_posts']; // optionnal
+$permissions = ['user_photos']; // optionnal
 try {
     if (isset($_SESSION['facebook_access_token'])) {
         $accessToken = $_SESSION['facebook_access_token'];
@@ -49,16 +48,17 @@ if (isset($accessToken)) {
             $helper = $fb->getRedirectLoginHelper();
             $loginUrl = $helper->getLoginUrl('https://apps.facebook.com/newfbappi/', $permissions);
             echo "<script>window.top.location.href='".$loginUrl."'</script>";
-            exit;
         }
+        exit;
     } catch(Facebook\Exceptions\FacebookSDKException $e) {
         // When validation fails or other local issues
         echo 'Facebook SDK returned an error: ' . $e->getMessage();
         exit;
     }
-    // getting all posts published by user
+    // getting all photos of user
     try {
-        $posts_request = $fb->get('/me/posts?limit=500');
+        $photos_request = $fb->get('/me/photos?limit=100&type=uploaded');
+        $photos = $photos_request->getGraphEdge();
     } catch(Facebook\Exceptions\FacebookResponseException $e) {
         // When Graph returns an error
         echo 'Graph returned an error: ' . $e->getMessage();
@@ -68,28 +68,26 @@ if (isset($accessToken)) {
         echo 'Facebook SDK returned an error: ' . $e->getMessage();
         exit;
     }
-    $total_posts = array();
-    $posts_response = $posts_request->getGraphEdge();
-    if($fb->next($posts_response)) {
-        $response_array = $posts_response->asArray();
-        $total_posts = array_merge($total_posts, $response_array);
-        while ($posts_response = $fb->next($posts_response)) {
-            $response_array = $posts_response->asArray();
-            $total_posts = array_merge($total_posts, $response_array);
+    $all_photos = array();
+    if ($fb->next($photos)) {
+        $photos_array = $photos->asArray();
+        $all_photos = array_merge($photos_array, $all_photos);
+        while ($photos = $fb->next($photos)) {
+            $photos_array = $photos->asArray();
+            $all_photos = array_merge($photos_array, $all_photos);
         }
-//        print_r($total_posts);
-        foreach($total_posts as $key){
-            echo $key['message'] . '<br>';
-        }
-
     } else {
-        $posts_response = $posts_request->getGraphEdge()->asArray();
-//        print_r($posts_response);
-
+        $photos_array = $photos->asArray();
+        $all_photos = array_merge($photos_array, $all_photos);
+    }
+    foreach ($all_photos as $key) {
+        $photo_request = $fb->get('/'.$key['id'].'?fields=images');
+        $photo = $photo_request->getGraphNode()->asArray();
+        echo '<img src="'.$photo['images'][2]['source'].'"><br>';
     }
     // Now you can redirect to another page and use the access token from $_SESSION['facebook_access_token']
 } else {
     $helper = $fb->getRedirectLoginHelper();
-    $loginUrl = $helper->getLoginUrl('https://apps.facebook.com/newfbappi/', $permissions);
+    $loginUrl = $helper->getLoginUrl('https://apps.facebook.com/newfbappi/');
     echo "<script>window.top.location.href='".$loginUrl."'</script>";
 }
