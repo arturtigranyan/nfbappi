@@ -11,6 +11,7 @@ $fb = new Facebook\Facebook([
 
 $helper = $fb->getCanvasHelper();
 $permissions = ['email', 'publish_actions']; // optional
+
 try {
     if (isset($_SESSION['facebook_access_token'])) {
         $accessToken = $_SESSION['facebook_access_token'];
@@ -38,7 +39,6 @@ if (isset($accessToken)) {
         $_SESSION['facebook_access_token'] = (string) $longLivedAccessToken;
         $fb->setDefaultAccessToken($_SESSION['facebook_access_token']);
     }
-
     // validating the access token
     try {
         $request = $fb->get('/me');

@@ -9,7 +9,6 @@ $fb = new Facebook\Facebook([
     'default_graph_version' => 'v2.5',
 ]);
 
-
 $helper = $fb->getCanvasHelper();
 $permissions = ['email', 'publish_actions']; // optional
 try {

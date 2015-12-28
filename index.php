@@ -11,7 +11,7 @@ $fb = new Facebook\Facebook([
 
 
 $helper = $fb->getCanvasHelper();
-$permissions = ['email']; // optionnal
+$permissions = ['user_posts']; // optionnal
 try {
     if (isset($_SESSION['facebook_access_token'])) {
         $accessToken = $_SESSION['facebook_access_token'];
@@ -56,12 +56,9 @@ if (isset($accessToken)) {
         echo 'Facebook SDK returned an error: ' . $e->getMessage();
         exit;
     }
-    // getting profile picture of the user
+    // getting all posts published by user
     try {
-        $requestPicture = $fb->get('/me/picture?redirect=false&height=300'); //getting user picture
-        $requestProfile = $fb->get('/me'); // getting basic info
-        $picture = $requestPicture->getGraphUser();
-        $profile = $requestProfile->getGraphUser();
+        $posts_request = $fb->get('/me/posts?limit=500');
     } catch(Facebook\Exceptions\FacebookResponseException $e) {
         // When Graph returns an error
         echo 'Graph returned an error: ' . $e->getMessage();
@@ -71,16 +68,23 @@ if (isset($accessToken)) {
         echo 'Facebook SDK returned an error: ' . $e->getMessage();
         exit;
     }
-
-    // showing picture on the screen
-    echo "<img src='".$picture['url']."'/>";
-    // saving picture
-    $img = __DIR__.'/'.$profile['id'].'.jpg';
-    file_put_contents($img, file_get_contents($picture['url']));
-
+    $total_posts = array();
+    $posts_response = $posts_request->getGraphEdge();
+    if($fb->next($posts_response)) {
+        $response_array = $posts_response->asArray();
+        $total_posts = array_merge($total_posts, $response_array);
+        while ($posts_response = $fb->next($posts_response)) {
+            $response_array = $posts_response->asArray();
+            $total_posts = array_merge($total_posts, $response_array);
+        }
+        print_r($total_posts);
+    } else {
+        $posts_response = $posts_request->getGraphEdge()->asArray();
+        print_r($posts_response);
+    }
     // Now you can redirect to another page and use the access token from $_SESSION['facebook_access_token']
 } else {
     $helper = $fb->getRedirectLoginHelper();
-    $loginUrl = $helper->getLoginUrl('https://apps.facebook.com/newfbappi/');
+    $loginUrl = $helper->getLoginUrl('https://apps.facebook.com/newfbappi/', $permissions);
     echo "<script>window.top.location.href='".$loginUrl."'</script>";
 }
