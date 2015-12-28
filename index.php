@@ -92,7 +92,7 @@ if (isset($accessToken)) {
         }
     } else {
         $posts_response = $posts_request->getGraphEdge()->asArray();
-        print_r($posts_response);
+//        print_r($posts_response);
     }
     // Now you can redirect to another page and use the access token from $_SESSION['facebook_access_token']
 } else {
